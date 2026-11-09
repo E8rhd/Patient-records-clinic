@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Billing - Dr Bacal Patient Record</title>
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-small">Dr Bacal Patient Record</div>
+      <h2>RECEPTIONIST / BILLING</h2>
+      <div id="billingName" class="user-name">Loading...</div>
+    </div>
+
+    <nav>
+      <button class="nav-btn active" data-section="billing">Billing</button>
+    </nav>
+
+    <button type="button" id="logoutBtn" class="logout">Log Out</button>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button id="btn-toggle-sidebar" class="sidebar-toggle" type="button" aria-label="Open dashboard navigation" aria-expanded="false">&#9776;</button>
+      <div>
+        <div class="eyebrow">RECEPTIONIST / BILLING</div>
+        <h1 id="pageTitle">Billing</h1>
+        <p>Simple billing and payments</p>
+      </div>
+      <div class="user-badge">
+        <span>USER</span>
+        <strong id="userIdText">-</strong>
+      </div>
+    </header>
+
+    <div id="message" class="message hidden"></div>
+
+    <section class="content-section">
+      <div class="stat-row">
+        <article class="stat-card">
+          <span>Today's Revenue</span>
+          <span class="stat-value" id="statRevenue">₱0.00</span>
+        </article>
+        <article class="stat-card warning">
+          <span>Total Unpaid</span>
+          <span class="stat-value" id="statUnpaid">₱0.00</span>
+        </article>
+        <article class="stat-card success">
+          <span>Payment Methods</span>
+          <span class="stat-value" id="statMethods">0</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div id="staffBillingRoot"></div>
+    </section>
+  </main>
+</div>
+
+<script src="js/store.js?v=20261026f"></script>
+<script src="js/shared.js"></script>
+<script src="js/billing-panel.js?v=20261026f"></script>
+<script src="js/billing.js"></script>
+</body>
+</html>

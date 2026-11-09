@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>History - Dr Bacal Patient Record</title>
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-small">Dr Bacal Patient Record</div>
+      <h2>HISTORY</h2>
+    </div>
+    <nav>
+      <a class="nav-btn" href="nurse.html">Back to Dashboard</a>
+    </nav>
+    <button id="logoutBtn" class="logout">Log Out</button>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button id="btn-toggle-sidebar" class="sidebar-toggle" type="button" aria-label="Open dashboard navigation" aria-expanded="false">&#9776;</button>
+      <div>
+        <div class="eyebrow">HISTORY</div>
+        <h1>History</h1>
+        <p>Consolidated history with time filters</p>
+      </div>
+    </header>
+
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Time Filter</h2></div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap">
+          <button class="btn" data-filter="today">Today</button>
+          <button class="btn" data-filter="week">This Week</button>
+          <button class="btn" data-filter="month">This Month</button>
+          <button class="btn" data-filter="all">All</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><h2>Consolidated History</h2></div></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Patient</th>
+              <th>Details</th>
+              <th>Date/Time</th>
+              <th>Additional Info</th>
+            </tr>
+          </thead>
+          <tbody id="histConsolidated"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="js/store.js?v=20261026f"></script>
+<script src="js/shared.js"></script>
+<script src="js/history.js?v=20261026f"></script>
+</body>
+</html>

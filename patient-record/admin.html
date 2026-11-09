@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - Dr Bacal Patient Record</title>
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-small">Dr Bacal Patient Record</div>
+        <h2>ADMIN</h2>
+        <div id="adminName" class="user-name">Loading...</div>
+      </div>
+
+      <nav>
+        <div class="nav-group-label">User Management</div>
+        <button class="nav-btn active" data-section="users-view">View Accounts</button>
+        <button class="nav-btn" data-section="users-create">Create Account</button>
+
+        <div class="nav-group-label">Role Management</div>
+        <button class="nav-btn" data-section="roles-view">View Roles</button>
+        <button class="nav-btn" data-section="roles-create">Create Role</button>
+
+        <div class="nav-group-label">Doctor Management</div>
+        <button class="nav-btn" data-section="specializations-view">View Specializations</button>
+        <button class="nav-btn" data-section="specializations-create">Create Specialization</button>
+
+        <div class="nav-group-label">System Records</div>
+        <button class="nav-btn" data-section="records-patients">Patients</button>
+        <button class="nav-btn" data-section="records-appointments">Appointments</button>
+      </nav>
+
+      <button id="logoutBtn" class="logout">Log Out</button>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button id="btn-toggle-sidebar" class="sidebar-toggle" type="button" aria-label="Open dashboard navigation" aria-expanded="false">&#9776;</button>
+        <div>
+          <div class="eyebrow">ADMIN DASHBOARD</div>
+          <h1 id="pageTitle">View Accounts</h1>
+        </div>
+        <div class="user-badge">
+          <span>ACCOUNT</span>
+          <strong id="adminIdText">-</strong>
+        </div>
+      </header>
+
+      <div id="message" class="message hidden"></div>
+
+      <section id="users-view" class="content-section">
+        <div class="card">
+          <div class="card-head">
+            <div><h2>Accounts</h2><p>View and activate or deactivate user accounts.</p></div>
+            <button class="btn" id="refreshUsers">Refresh</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Username</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="usersBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="users-create" class="content-section d-none">
+        <div class="card" style="max-width: 560px">
+          <div class="card-head">
+            <div><h2>Create Account</h2><p>Register a new system user.</p></div>
+          </div>
+          <form id="createAccountForm" class="form-grid">
+            <label>Username<input id="cu-username" required /></label>
+            <label>Password<input id="cu-password" type="password" required /></label>
+            <label>First Name<input id="cu-first-name" required /></label>
+            <label>Last Name<input id="cu-last-name" required /></label>
+            <label class="full">Email<input id="cu-email" type="email" required /></label>
+            <label>Role<select id="cu-role" required></select></label>
+            <div id="doctorFields" class="hidden full" style="display: contents">
+              <label>Specialization<select id="cu-specialization"></select></label>
+              <label>Contact Number<input id="cu-contact" /></label>
+            </div>
+            <div class="form-actions">
+              <button class="btn primary" type="submit">Create Account</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section id="roles-view" class="content-section d-none">
+        <div class="card">
+          <div class="card-head"><div><h2>Roles</h2><p>All roles available in the system.</p></div></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Role Name</th></tr></thead>
+              <tbody id="rolesBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="roles-create" class="content-section d-none">
+        <div class="card" style="max-width: 460px">
+          <div class="card-head"><div><h2>Create Role</h2><p>Add a new role name.</p></div></div>
+          <form id="createRoleForm" class="form-grid">
+            <label class="full">Role Name<input id="cr-role-name" required placeholder="e.g. Pharmacist" /></label>
+            <div class="form-actions"><button class="btn primary" type="submit">Create Role</button></div>
+          </form>
+        </div>
+      </section>
+
+      <section id="specializations-view" class="content-section d-none">
+        <div class="card">
+          <div class="card-head"><div><h2>Specializations</h2><p>All doctor specializations.</p></div></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Specialization Name</th></tr></thead>
+              <tbody id="specializationsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="specializations-create" class="content-section d-none">
+        <div class="card" style="max-width: 460px">
+          <div class="card-head"><div><h2>Create Specialization</h2><p>Add a new doctor specialization.</p></div></div>
+          <form id="createSpecializationForm" class="form-grid">
+            <label class="full">Specialization Name<input id="cs-specialization-name" required placeholder="e.g. Cardiology" /></label>
+            <div class="form-actions"><button class="btn primary" type="submit">Create Specialization</button></div>
+          </form>
+        </div>
+      </section>
+
+      <section id="records-patients" class="content-section d-none">
+        <div class="card">
+          <div class="card-head">
+            <div><h2>Patients</h2><p>Archive history for all patient records.</p></div>
+            <div class="search-box">
+              <label style="font-size: 0.8rem; color: rgba(255,255,255,0.75)">Patients</label>
+              <select id="patientArchiveFilter">
+                <option value="0">Active</option>
+                <option value="1">Archived</option>
+              </select>
+              <button class="btn" id="refreshPatients">Refresh</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Name</th><th>Address</th><th>Contact</th><th>Date of Birth</th><th>Action</th></tr></thead>
+              <tbody id="patientsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="records-appointments" class="content-section d-none">
+        <div class="card">
+          <div class="card-head">
+            <div><h2>Appointments</h2><p>All appointments across the clinic.</p></div>
+            <button class="btn" id="refreshAppointments">Refresh</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Patient</th><th>Doctor</th><th>Date</th><th>Time</th><th>Status</th></tr></thead>
+              <tbody id="appointmentsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/store.js?v=20261026f"></script>
+  <script src="js/shared.js"></script>
+  <script src="js/admin.js?v=20261026f"></script>
+</body>
+</html>

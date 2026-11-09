@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nurse Dashboard - Dr Bacal Patient Record</title>
+  <link rel="stylesheet" href="css/app.css?v=20261026f" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-small">Dr Bacal Patient Record</div>
+      <h2 id="nurseRoleTitle">NURSE</h2>
+      <div id="nurseName" class="user-name">Loading...</div>
+    </div>
+
+    <nav>
+      <button class="nav-btn active" data-section="appointments">Schedule</button>
+      <button class="nav-btn" data-section="patients">Patients</button>
+      <button class="nav-btn" data-section="vitals">Vital Signs</button>
+      <button class="nav-btn" data-section="history">Medical History</button>
+      <a class="nav-btn" href="history.html">History</a>
+    </nav>
+
+    <button type="button" id="logoutBtn" class="logout">Log Out</button>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button id="btn-toggle-sidebar" class="sidebar-toggle" type="button" aria-label="Open dashboard navigation" aria-expanded="false">&#9776;</button>
+      <div>
+        <div class="eyebrow">NURSE DASHBOARD</div>
+        <h1 id="pageTitle">Schedule</h1>
+        <p id="pageDescription">Review scheduled patients and arrivals.</p>
+      </div>
+      <div class="user-badge">
+        <span>USER</span>
+        <strong id="userIdText">-</strong>
+      </div>
+    </header>
+
+    <div id="message" class="message hidden"></div>
+
+    <section id="appointments" class="content-section">
+      <div id="nurseNotifications" class="message hidden"></div>
+      <div class="card">
+        <div class="card-head">
+          <div><h2>Pending / Waiting for Arrival</h2><p>Online schedules awaiting arrival at the clinic.</p></div>
+          <button class="btn" id="refreshAppointments">Refresh</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Patient</th><th>Doctor</th><th>Date</th><th>Time</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="onlineAppointmentsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="patients" class="content-section d-none">
+      <div class="card">
+        <div class="card-head">
+          <div><h2>Patients</h2><p>Register, retrieve, update patient records.</p></div>
+          <button class="btn primary" id="openRegisterPatient">+ Register Patient</button>
+        </div>
+
+        <div class="search-box" style="margin-bottom: 16px">
+          <input id="patientSearch" type="text" placeholder="Search name or ID" />
+          <select id="patientArchiveFilter" aria-label="Patient archive filter">
+            <option value="0">Active patients</option>
+            <option value="1">Archived patients</option>
+          </select>
+          <button class="btn" id="searchPatientsBtn">Search</button>
+        </div>
+
+        <div class="card" style="background: #fff; color: var(--ink); border: 1px solid var(--line)">
+          <div class="card-head"><div><h3>Patient Details</h3></div></div>
+          <form id="patientForm" class="form-grid" style="grid-template-columns: repeat(3, 1fr)">
+            <input type="hidden" id="patientId" />
+            <label style="color: var(--muted)">First Name<input id="patientFirstName" class="name-input" autocapitalize="words" required /></label>
+            <label style="color: var(--muted)">Middle Name<input id="patientMiddleName" class="name-input" autocapitalize="words" /></label>
+            <label style="color: var(--muted)">Last Name<input id="patientLastName" class="name-input" autocapitalize="words" required /></label>
+            <label style="color: var(--muted)">Birth Date
+              <div class="date-select" data-date-select data-target="patientBirthDate" data-max="today">
+                <select data-month aria-label="Birth month" required></select><select data-day aria-label="Birth day" required></select><select data-year aria-label="Birth year" required></select>
+                <input id="patientBirthDate" type="hidden" />
+              </div>
+            </label>
+            <label style="color: var(--muted)">Sex<select id="patientGender" required><option value="">Select sex...</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option></select></label>
+            <label style="color: var(--muted)">Contact Number<input id="patientContact" /></label>
+            <label style="color: var(--muted)">Email<input id="patientEmail" type="email" /></label>
+            <label style="color: var(--muted)" class="full">Address<input id="patientAddress" /></label>
+            <label style="color: var(--muted)">Status<select id="patientStatus"><option value="active">Active</option><option value="inactive">Inactive</option></select></label>
+            <div class="form-actions" style="grid-column: 1 / -1; justify-content: flex-end; gap: 10px">
+              <button class="btn primary" type="submit">Update Patient</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Patient</th><th>Sex</th><th>Birth Date</th><th>Contact</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="patientsBody"></tbody>
+          </table>
+        </div>
+        <div style="margin-top: 10px">
+          <button class="btn" type="button" id="archivePatientButton">Archive Patient</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="vitals" class="content-section d-none">
+      <div class="card">
+        <div class="card-head">
+          <div><h2>Vital Signs</h2><p>Record and manage vital signs.</p></div>
+          <button class="btn" id="refreshVitals">Refresh</button>
+        </div>
+
+        <div class="card" style="background: #fff; color: var(--ink); border: 1px solid var(--line)">
+          <div class="card-head"><div><h3>Input Form</h3></div></div>
+          <form id="vitalsForm" class="form-grid" style="grid-template-columns: repeat(3, 1fr)">
+            <input type="hidden" id="vitalId" />
+            <label style="color: var(--muted)">Appointment<select id="vitalAppointment" required></select></label>
+            <label style="color: var(--muted)">Temperature (°C)<input id="temperature" type="number" step="0.1" placeholder="e.g. 36.8" /></label>
+            <label style="color: var(--muted)">Blood Pressure<input id="bloodPressure" placeholder="120/80" /></label>
+            <label style="color: var(--muted)">Heart Rate (bpm)<input id="heartRate" type="number" placeholder="e.g. 72" /></label>
+            <label style="color: var(--muted)">Respiratory Rate (rpm)<input id="respiratoryRate" type="number" placeholder="e.g. 16" /></label>
+            <label style="color: var(--muted)">Height (cm)<input id="height" type="number" step="0.01" placeholder="e.g. 165" /></label>
+            <label style="color: var(--muted)">Weight (kg)<input id="weight" type="number" step="0.01" placeholder="e.g. 62" /></label>
+            <div class="form-actions" style="grid-column: 1 / -1; justify-content: flex-end">
+              <button class="btn" type="button" id="clearVitals">Clear</button>
+              <button class="btn primary" type="submit">Save Vital Signs</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card" style="background: #fff; color: var(--ink); border: 1px solid var(--line)">
+          <div class="card-head">
+            <div><h3>Records</h3></div>
+            <div class="search-box" style="margin: 0">
+              <label style="color: var(--muted); display: flex; align-items: center; gap: 6px">From
+                <div class="date-select date-select-compact" data-date-select data-target="vitalDateFrom" data-max="today"><select data-month aria-label="From month"></select><select data-day aria-label="From day"></select><select data-year aria-label="From year"></select><input id="vitalDateFrom" type="hidden" /></div>
+              </label>
+              <label style="color: var(--muted); display: flex; align-items: center; gap: 6px">To
+                <div class="date-select date-select-compact" data-date-select data-target="vitalDateTo" data-max="today"><select data-month aria-label="To month"></select><select data-day aria-label="To day"></select><select data-year aria-label="To year"></select><input id="vitalDateTo" type="hidden" /></div>
+              </label>
+              <button class="btn" type="button" id="clearVitalFilter">Clear Filter</button>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Patient</th><th>Date</th><th>Temp (°C)</th><th>BP</th><th>HR (bpm)</th><th>RR (rpm)</th><th>Height (cm)</th><th>Weight (kg)</th><th>Recorded By</th><th>Action</th></tr></thead>
+              <tbody id="vitalsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="history" class="content-section d-none">
+      <div class="card">
+        <div class="card-head">
+          <div><h2>Medical History</h2><p>Search and view patient's medical history.</p></div>
+        </div>
+        <div class="patient-picker">
+          <input id="historySearch" type="text" placeholder="Type to search patient..." style="max-width: 260px" />
+          <select id="historyPatient"></select>
+          <button class="btn" id="loadHistory">View Medical History</button>
+        </div>
+        <div id="historyResult" class="record-grid"></div>
+      </div>
+    </section>
+
+    <section id="billing" class="content-section d-none" style="display:none"></section>
+  </main>
+</div>
+
+<div id="registerPatientModal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div><h2>Register Patient</h2><p>Create a new patient record.</p></div>
+      <button type="button" id="closeRegisterPatient" class="modal-close">&times;</button>
+    </div>
+    <form id="registerPatientForm" class="form-grid">
+      <label>First Name<input id="registerFirstName" class="name-input" type="text" autocapitalize="words" required /></label>
+      <label>Middle Name<input id="registerMiddleName" class="name-input" type="text" autocapitalize="words" /></label>
+      <label>Last Name<input id="registerLastName" class="name-input" type="text" autocapitalize="words" required /></label>
+      <label>Birth Date
+        <div class="date-select" data-date-select data-target="registerBirthDate" data-max="today">
+          <select data-month aria-label="Birth month" required></select><select data-day aria-label="Birth day" required></select><select data-year aria-label="Birth year" required></select>
+          <input id="registerBirthDate" type="hidden" />
+        </div>
+      </label>
+      <label>Sex<select id="registerGender" required><option value="">Select sex...</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option></select></label>
+      <label>Contact Number<input id="registerContact" type="text" /></label>
+      <label>Email<input id="registerEmail" type="email" /></label>
+      <label class="full">Address<input id="registerAddress" type="text" /></label>
+      <div class="full"><h3 style="margin: 6px 0 0; font-size: 0.95rem">Emergency Contact</h3></div>
+      <label>Full Name<input id="registerEmergencyName" type="text" /></label>
+      <label>Relationship<input id="registerEmergencyRelationship" type="text" /></label>
+      <label>Contact Number<input id="registerEmergencyContact" type="text" /></label>
+      <div class="form-actions full">
+        <button type="submit" class="btn primary">Register Patient</button>
+        <button type="button" id="cancelRegisterPatient" class="btn">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+    <script src="js/store.js?v=20261026f"></script>
+    <script src="js/date-select.js?v=20261026f"></script>
+    <script src="js/shared.js?v=20261026f"></script>
+    <script src="js/nurse.js?v=20261026f"></script>
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Doctor Dashboard - Dr Bacal Patient Record</title>
+  <link rel="stylesheet" href="css/app.css?v=20261026f" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-small">Dr Bacal Patient Record</div>
+      <h2>DOCTOR</h2>
+      <div id="doctorName" class="doctor-name">Loading...</div>
+    </div>
+
+    <nav>
+      <button class="nav-btn active" data-section="schedule">Schedule</button>
+      <button class="nav-btn" data-section="history">Medical History</button>
+      <button class="nav-btn" data-section="consultations">Consultation</button>
+      <button class="nav-btn" data-section="diagnosis">Diagnosis</button>
+      <button class="nav-btn" data-section="prescription">Prescription</button>
+    </nav>
+
+    <button type="button" id="logoutBtn" class="logout">Log Out</button>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button id="btn-toggle-sidebar" class="sidebar-toggle" type="button" aria-label="Open dashboard navigation" aria-expanded="false">&#9776;</button>
+      <div>
+        <div class="eyebrow">DOCTOR DASHBOARD</div>
+        <h1 id="pageTitle">Schedule</h1>
+        <p id="pageDescription">Patients scheduled to see you today.</p>
+      </div>
+      <div class="doctor-badge">
+        <span>DOCTOR</span>
+        <strong id="doctorIdText">-</strong>
+      </div>
+    </header>
+
+    <div id="message" class="message hidden"></div>
+
+    <section id="schedule" class="content-section">
+      <div class="card">
+        <div class="card-head"><div><h2>Schedule for the Day</h2><p>Accept a scheduled patient to begin the consultation.</p></div>
+          <button class="btn" id="refreshAppointments" type="button">Refresh</button></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Time</th><th>Patient</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="doctorScheduleBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="patients" class="content-section d-none">
+      <div class="card">
+        <div class="card-head">
+          <div><h2>Patients</h2><p>Search patients and open their medical record.</p></div>
+          <div class="search-box doctor-patient-search">
+            <input id="patientSearch" type="text" placeholder="Search patient name or ID" />
+            <select id="patientArchiveFilter" aria-label="Patient archive filter">
+              <option value="0">Active patients</option>
+              <option value="1">Archived patients</option>
+            </select>
+            <button class="btn" id="searchPatientsBtn">Search</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Patient</th><th>Gender</th><th>Birth Date</th><th>Contact</th><th>Actions</th></tr></thead>
+            <tbody id="patientsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="history" class="content-section d-none">
+      <div class="card">
+        <div class="card-head">
+          <div><h2>Medical History</h2><p>Select a patient to review or update the stored medical history.</p></div>
+        </div>
+        <div class="patient-picker doctor-history-picker">
+          <label for="historyPatientSearch">Search patient</label>
+          <div class="patient-suggestion-wrap">
+            <input id="historyPatientSearch" type="search" placeholder="Type a patient name..." autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="historyPatientSuggestions" />
+            <div id="historyPatientSuggestions" class="patient-suggestions hidden" role="listbox" aria-label="Matching patients"></div>
+          </div>
+          <button class="btn" type="button" id="viewHistoryBtn">View Patient History</button>
+          <button class="btn primary" type="button" id="generateHistoryBtn">Generate Medical History</button>
+        </div>
+        <div id="historyResult" class="record-grid"></div>
+      </div>
+    </section>
+
+    <section id="consultations" class="content-section d-none">
+      <div class="card">
+        <div class="card-head">
+          <div><h2>Consultation</h2><p>Face-to-face consultation - Medical History + Medical Notes only.</p></div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Patient</th><th>Chief Complaint</th><th>Temperature</th><th>Blood Pressure</th><th>Heart Rate</th><th>Respiratory Rate</th><th>Height</th><th>Weight</th></tr></thead>
+            <tbody id="consultationVitalsBody">
+              <tr><td colspan="8">Select an appointment to see the chief complaint and vital signs.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card" style="margin-top: 12px">
+          <div class="card-head"><div><h3>Medical History</h3><p>Review the patient's recorded history before documenting notes.</p></div></div>
+          <div id="consultHistoryQuick" class="record-grid"></div>
+        </div>
+
+        <form id="consultationForm" class="form-grid" style="margin-top: 16px">
+          <label>Scheduled Patient<select id="consultAppointment" required></select></label>
+          <input type="hidden" id="consultPatient" />
+          <label class="full">Medical Notes<textarea id="consultNotes" rows="5" required placeholder="Enter medical notes..."></textarea></label>
+          <div class="form-actions"><button class="btn primary" type="submit">Save Medical Notes</button></div>
+        </form>
+      </div>
+    </section>
+
+    <section id="diagnosis" class="content-section d-none">
+      <div class="card">
+        <div class="card-head">
+          <div><h2>Diagnosis</h2><p>Diagnose after consultation. Laboratory test is optional.</p></div>
+        </div>
+        <form id="diagnosisForm" class="form-grid">
+          <label>Consultation<select id="diagnosisConsultation" required></select></label>
+          <label>ICD-10 Code<select id="icd10" required></select></label>
+          <label class="full">Diagnosis Notes<textarea id="diagnosisNotes" rows="3" placeholder="Diagnosis notes"></textarea></label>
+          <label>Laboratory Test (Optional)<select id="diagLabTest"><option value="">Select a test...</option><option value="CBC">CBC</option><option value="Urinalysis">Urinalysis</option><option value="X-ray">X-ray</option><option value="Blood Chemistry">Blood Chemistry</option></select></label>
+          <label>Lab Remarks<input id="diagLabRemarks" placeholder="Remarks" /></label>
+          <div class="form-actions">
+            <button class="btn" id="requestLaboratory" type="button">Request Laboratory</button>
+            <button class="btn primary" type="submit">Save Diagnosis</button>
+          </div>
+        </form>
+
+        <div class="subhead">Recorded Diagnoses</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Patient</th><th>Code</th><th>Diagnosis</th><th>Lab Test</th><th>Date</th></tr></thead>
+            <tbody id="diagnosesBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="prescription" class="content-section d-none">
+      <div class="card">
+        <div class="card-head">
+          <div><h2>Prescription</h2><p>Cleaner prescription table.</p></div>
+        </div>
+        <form id="prescriptionForm" class="form-grid">
+          <label>Consultation<select id="prescriptionConsultation" required></select></label>
+          <label>Medicine<select id="medicine" required></select></label>
+          <label>Dosage<input id="dosage" required placeholder="e.g. 500 mg" /></label>
+          <label>Frequency<input id="frequency" required placeholder="e.g. 3 times a day" /></label>
+          <label>Duration<input id="duration" required placeholder="e.g. 7 days" /></label>
+          <label class="full">Instructions<textarea id="instructions" rows="2" placeholder="e.g. Take after meals"></textarea></label>
+          <div id="medicineForm" class="full hidden" style="display: contents">
+            <label>Medicine Name<input id="medicineName" placeholder="e.g. Amoxicillin" /></label>
+            <label>Dosage Form<input id="medicineFormType" placeholder="e.g. Tablet" /></label>
+            <label>Strength<input id="medicineStrength" placeholder="e.g. 500mg" /></label>
+            <div class="form-actions">
+              <button class="btn primary" id="saveMedicine" type="button">Add Medicine</button>
+              <button class="btn" id="cancelMedicine" type="button">Cancel</button>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn" id="toggleMedicineForm" type="button">+ Add Medicine</button>
+            <button class="btn primary" type="submit">Create Prescription</button>
+          </div>
+        </form>
+
+        <div class="subhead">Recorded Prescriptions</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Patient</th><th>Medicine</th><th>Dosage</th><th>Frequency</th><th>Duration</th><th>Instructions</th></tr></thead>
+            <tbody id="prescriptionsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="laboratory" class="content-section d-none">
+      <div class="card">
+        <div class="card-head">
+          <div><h2>Laboratory</h2><p>Create or view laboratory requests linked to consultations.</p></div>
+        </div>
+        <form id="labForm" class="form-grid">
+          <label>Consultation<select id="labConsultation" required></select></label>
+          <label>Lab Request Category
+            <select id="labCategory" required>
+              <option value="">Select...</option>
+              <option value="X-ray">X-ray</option>
+              <option value="CT Scan">CT Scan</option>
+              <option value="MRI">MRI</option>
+            </select>
+          </label>
+          <label>Test Name<input id="labTestName" required placeholder="e.g. Chest PA" /></label>
+          <label>Result<input id="labResult" placeholder="Test result" /></label>
+          <label>Reference Range<input id="labReference" placeholder="Normal range" /></label>
+          <label class="full">Remarks<textarea id="labRemarks" rows="3" placeholder="Laboratory remarks"></textarea></label>
+          <div class="form-actions"><button class="btn primary" type="submit">Save Lab Request</button></div>
+        </form>
+
+        <div class="subhead">Laboratory Records</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Patient</th><th>Category</th><th>Test Name</th><th>Result</th><th>Reference</th><th>Remarks</th><th>Date</th></tr></thead>
+            <tbody id="labBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="historyModal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div>
+        <div class="eyebrow" style="color:#64748b">PATIENT RECORD</div>
+        <h2>Medical History</h2>
+        <p>Review and update the selected patient's history.</p>
+      </div>
+      <button class="modal-close" type="button" id="closeHistoryModal" aria-label="Close medical history">&times;</button>
+    </div>
+
+    <form id="medicalHistoryForm" class="form-grid">
+      <div id="historySaveMessage" class="message hidden full" role="status" aria-live="polite"></div>
+
+      <section class="history-section full">
+        <h3>Patient Information</h3>
+        <div class="history-fields history-fields-four">
+          <label>First Name<input id="historyFirstName" readonly /></label>
+          <label>Middle Name<input id="historyMiddleName" readonly /></label>
+          <label>Last Name<input id="historyLastName" readonly /></label>
+          <label>Date of Birth<input id="historyBirthDate" readonly /></label>
+          <label>Gender<input id="historyGender" readonly /></label>
+          <label>Phone<input id="historyPhone" readonly /></label>
+          <label>Email<input id="historyEmail" readonly /></label>
+        </div>
+        <div class="history-subheading">Emergency Contact</div>
+        <div class="history-fields history-emergency-fields">
+          <label>Emergency Contact Name<input id="historyEmergencyName" /></label>
+          <label>Relationship<input id="historyEmergencyRelationship" /></label>
+          <label>Emergency Contact Phone<input id="historyEmergencyPhone" type="tel" /></label>
+        </div>
+      </section>
+
+      <section class="history-section full">
+        <h3>Reason for Visit / Chief Complaint</h3>
+        <div class="history-fields">
+          <label class="full">Primary reason for today's visit<textarea id="historyReasonForVisit" rows="2" readonly></textarea></label>
+          <label>When did the symptoms start?
+            <div class="date-select" data-date-select data-target="historySymptomStart" data-max="today">
+              <select data-month aria-label="Symptom start month"></select><select data-day aria-label="Symptom start day"></select><select data-year aria-label="Symptom start year"></select>
+              <input id="historySymptomStart" type="hidden" />
+            </div>
+          </label>
+        </div>
+      </section>
+
+      <section class="history-section full">
+        <h3>Medical History <span>(check all that apply)</span></h3>
+        <div class="history-check-grid">
+          <label><input type="checkbox" name="personalHistory" value="High Blood Pressure">High Blood Pressure</label>
+          <label><input type="checkbox" name="personalHistory" value="Asthma / COPD">Asthma / COPD</label>
+          <label><input type="checkbox" name="personalHistory" value="Thyroid Disease">Thyroid Disease</label>
+          <label><input type="checkbox" name="personalHistory" value="Diabetes (Type 1 / 2)">Diabetes (Type 1 / 2)</label>
+          <label><input type="checkbox" name="personalHistory" value="Heart Disease">Heart Disease</label>
+          <label><input type="checkbox" name="personalHistory" value="Depression / Anxiety">Depression / Anxiety</label>
+          <label><input type="checkbox" name="personalHistory" value="High Cholesterol">High Cholesterol</label>
+          <label><input type="checkbox" name="personalHistory" value="Kidney Disease">Kidney Disease</label>
+          <label><input type="checkbox" name="personalHistory" value="Cancer">Cancer</label>
+        </div>
+        <label class="history-other">Other conditions<textarea id="historyConditionsOther" rows="2"></textarea></label>
+      </section>
+
+      <section class="history-section full">
+        <h3>Current Medications &amp; Supplements</h3>
+        <div class="table-wrap">
+          <table class="history-medication-table">
+            <thead><tr><th>Medication / Supplement</th><th>Dose</th><th></th></tr></thead>
+            <tbody id="historyMedicationRows"></tbody>
+          </table>
+        </div>
+        <div class="form-actions" style="margin-top: 8px">
+          <button id="addHistoryMedication" class="small-btn" type="button">+ Add medication</button>
+        </div>
+      </section>
+
+      <section class="history-section full">
+        <h3>Past Surgeries / Hospitalizations</h3>
+        <textarea id="historySurgeries" rows="3"></textarea>
+      </section>
+
+      <section class="history-section full">
+        <h3>Allergies to Medications, Food, or Latex</h3>
+        <div class="history-check-grid">
+          <label><input type="checkbox" name="allergyHistory" value="None">None</label>
+          <label><input type="checkbox" name="allergyHistory" value="Penicillin">Penicillin</label>
+          <label><input type="checkbox" name="allergyHistory" value="Latex">Latex</label>
+          <label><input type="checkbox" name="allergyHistory" value="Other">Other</label>
+        </div>
+        <label class="history-other">Other allergies<textarea id="historyAllergies" rows="2"></textarea></label>
+      </section>
+
+      <section class="history-section full">
+        <h3>Family Medical History <span>(blood relatives)</span></h3>
+        <div class="history-check-grid">
+          <label><input type="checkbox" name="familyHistory" value="Heart Disease">Heart Disease</label>
+          <label><input type="checkbox" name="familyHistory" value="Diabetes">Diabetes</label>
+          <label><input type="checkbox" name="familyHistory" value="Cancer">Cancer</label>
+          <label><input type="checkbox" name="familyHistory" value="Stroke">Stroke</label>
+          <label><input type="checkbox" name="familyHistory" value="High Blood Pressure">High Blood Pressure</label>
+        </div>
+      </section>
+
+      <section class="history-section full">
+        <h3>Lifestyle &amp; Social History</h3>
+        <div class="history-lifestyle-grid">
+          <fieldset>
+            <legend>Smoking / Tobacco Use</legend>
+            <label><input type="radio" name="smokingStatus" value="Never">Never</label>
+            <label><input type="radio" name="smokingStatus" value="Former">Former</label>
+            <label><input type="radio" name="smokingStatus" value="Current">Current</label>
+            <label class="history-packs" aria-hidden="true">Packs per day<input id="historySmokingPacks" type="number" min="0" step="0.1" disabled /></label>
+          </fieldset>
+          <fieldset>
+            <legend>Alcohol Consumption</legend>
+            <label><input type="radio" name="alcoholUse" value="Never">Never</label>
+            <label><input type="radio" name="alcoholUse" value="Occasional">Occasional</label>
+            <label><input type="radio" name="alcoholUse" value="Daily">Daily</label>
+          </fieldset>
+          <fieldset>
+            <legend>Physical Exercise</legend>
+            <label><input type="radio" name="exerciseLevel" value="Sedentary">Sedentary</label>
+            <label><input type="radio" name="exerciseLevel" value="Moderate">Moderate</label>
+            <label><input type="radio" name="exerciseLevel" value="Active">Active</label>
+          </fieldset>
+        </div>
+      </section>
+
+      <div class="form-actions full">
+        <button class="btn primary" type="submit">Save Medical History</button>
+        <button class="btn primary" id="printHistoryBtn" type="button">Generate Medical History</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+    <script src="js/store.js?v=20261026f"></script>
+    <script src="js/date-select.js?v=20261026f"></script>
+    <script src="js/shared.js?v=20261026f"></script>
+    <script src="js/doctor.js?v=20261026f"></script>
+</body>
+</html>

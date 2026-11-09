@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dr Bacal Patient Record</title>
+  <link rel="stylesheet" href="css/app.css?v=20261026f" />
+</head>
+<body class="login-body">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="brand-mark">DB</div>
+      <h1>Clinic Management System</h1>
+      <p>Staff access for Admin, Nurse, and Doctor</p>
+    </div>
+
+    <div class="field">
+      <label for="username">Username</label>
+      <input type="text" id="username" placeholder="Enter username" autocomplete="username" />
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Enter password" autocomplete="current-password" />
+    </div>
+
+    <div id="login-notice" class="login-notice hidden" role="status"></div>
+    <div id="login-error" class="login-error hidden" role="alert"></div>
+
+    <button id="btn-login" class="btn primary" style="width: 100%">Log In</button>
+
+    <div class="login-hint">Authorized clinic staff only.</div>
+  </div>
+
+  <script src="js/store.js?v=20261026f"></script>
+  <script src="js/shared.js?v=20261026f"></script>
+  <script src="js/login.js?v=20261026f"></script>
+</body>
+</html>

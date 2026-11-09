@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Patient Scheduling - Clinic Management System</title>
+  <link rel="stylesheet" href="css/app.css?v=20261026f" />
+</head>
+<body class="login-body">
+  <main class="login-card scheduling-card">
+    <div class="login-brand">
+      <div class="brand-mark">DB</div>
+      <h1>Schedule a Clinic Visit</h1>
+      <p>Choose a doctor and an available date and time.</p>
+    </div>
+
+    <form id="scheduleForm" class="form-grid">
+      <label>First Name<input id="firstName" autocomplete="given-name" required /></label>
+      <label>Middle Name<input id="middleName" autocomplete="additional-name" /></label>
+      <label>Last Name<input id="lastName" autocomplete="family-name" required /></label>
+      <label>Birth Date
+        <div class="date-select" data-date-select data-target="birthDate" data-max="today">
+          <select data-month aria-label="Birth month" required></select><select data-day aria-label="Birth day" required></select><select data-year aria-label="Birth year" required></select>
+          <input id="birthDate" type="hidden" />
+        </div>
+      </label>
+      <label>Sex
+        <select id="gender" required>
+          <option value="">Select...</option><option>Female</option><option>Male</option><option>Other</option>
+        </select>
+      </label>
+      <label>Contact Number<input id="contact" type="tel" autocomplete="tel" required /></label>
+      <label class="full">Address<input id="address" autocomplete="street-address" required /></label>
+      <label class="full">Gmail<input id="email" type="email" autocomplete="email" required /></label>
+      <label>Specialization<select id="specialization" required><option value="">Loading...</option></select></label>
+      <label>Doctor<select id="doctor" required disabled><option value="">Select specialization first</option></select></label>
+      <label class="full">Appointment Date (tomorrow)
+        <div class="date-select date-select-fixed" data-date-select data-target="appointmentDate" data-fixed="tomorrow">
+          <select data-month aria-label="Appointment month"></select><select data-day aria-label="Appointment day"></select><select data-year aria-label="Appointment year"></select>
+          <input id="appointmentDate" type="hidden" />
+        </div>
+      </label>
+      <label class="full">Available Time<select id="appointmentTime" required disabled><option value="">Select a date first</option></select></label>
+      <div class="form-actions full">
+        <button class="btn primary" type="submit">Schedule</button>
+      </div>
+    </form>
+    <div id="scheduleMessage" class="message hidden" role="status" aria-live="polite"></div>
+  </main>
+
+  <script src="js/store.js?v=20261026f"></script>
+  <script src="js/date-select.js?v=20261026f"></script>
+  <script src="js/shared.js?v=20261026f"></script>
+  <script src="js/scheduling.js?v=20261026g"></script>
+</body>
+</html>

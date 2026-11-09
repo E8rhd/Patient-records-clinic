@@ -1,0 +1,89 @@
+﻿DR BACAL CLINIC MANAGEMENT SYSTEM
+GIYA SA PAG-INSTALL UG PAGPADAGAN (BISAYA)
+
+MGA KINAHANGLAN
+- Windows computer nga adunay XAMPP.
+- Apache ug MySQL/MariaDB nga apil sa XAMPP.
+- PHP 8.0 pataas, PHP PDO, ug pdo_mysql extension.
+- Browser sama sa Chrome o Edge.
+
+1. PAGBUTANG SA PROJECT
+1) I-extract ang ZIP file.
+2) Kopyaha ang sulod nga folder nga dr-bacal-patient-record ngadto sa:
+   C:\xampp\htdocs\dr-bacal-patient-record
+   Siguroa nga dili mahimong doble ang folder, pananglitan:
+   C:\xampp\htdocs\dr-bacal-patient-record\dr-bacal-patient-record\index.html
+
+2. PAG-ANDAM SA XAMPP
+1) Ablihi ang XAMPP Control Panel.
+2) I-klik ang Start sa Apache ug MySQL.
+3) Siguroa nga nagdagan silang duha.
+4) Ablihi ang http://localhost/phpmyadmin sa browser.
+
+3. PAG-IMPORT SA DATABASE (BAG-ONG INSTALLATION)
+1) Sa phpMyAdmin, pilia ang Import.
+2) Pilia ang database/dr_bacal_patient_record.sql sulod sa project.
+3) I-klik ang Import/Go sa ubos.
+4) Ang SQL file maoy mohimo sa dr_bacal_patient_record database, mga table, ug demo records.
+   Ayaw pag-import sa migration file human niini sa bag-ong database.
+
+4. DATABASE LOGIN SETTINGS
+Ang default sa api/config.php para sa kasagarang XAMPP mao kini:
+- Host: 127.0.0.1
+- Database: dr_bacal_patient_record
+- Username: root
+- Password: walay sulod
+
+Kon lahi ang MySQL username o password sa imong computer, usba ang api/config.php o itakda
+ang DRBACAL_DB_HOST, DRBACAL_DB_NAME, DRBACAL_DB_USER, ug DRBACAL_DB_PASSWORD sa PHP/Apache
+environment. Kinahanglan naka-enable ang pdo_mysql sa XAMPP php.ini.
+
+5. PAG-ABLI SA SISTEMA
+- Staff login: http://localhost/dr-bacal-patient-record/login
+- Patient scheduling form: http://localhost/dr-bacal-patient-record/schedule
+- Ang public schedule page walay patient login. Ang staff kinahanglan mo-login aron maka-access
+  sa ilang dashboard.
+
+DEMO STAFF ACCOUNTS
+Role        Username       Password
+Admin       admin          admin123
+Doctor      doctor         doctor123
+Nurse       nurse          nurse123
+
+Demo credentials ra kini. Ilisi ang mga password ug siguroha ang seguridad sa database sa dili
+pa paggamit niini sa tinuod nga datos sa pasyente. Ayaw ibutang ang demo sa public server nga
+walay hustong seguridad ug deployment setup.
+
+6. PAG-UPDATE SA DAAN NANG DATABASE
+Kon naa na kay daang database ug gusto nimo ipadayon ang daang records, una pag-export/backup
+sa database sa phpMyAdmin. Dayon gamita ang database/migrations/replace_booking_with_scheduling.sql
+sa daang dr_bacal_patient_record database. Ayaw i-import ang tibuok dr_bacal_patient_record.sql
+sa daan nga database kay ang SQL file para sa bag-ong setup ug mahimong maapektuhan ang datos.
+
+PAG-AYO SA KASAGARANG PROBLEMA
+- ERR_CONNECTION_REFUSED: Sugdi ang Apache sa XAMPP ug tan-awa kung sakto ang folder sulod sa
+  C:\xampp\htdocs.
+- Database connection error: Sugdi ang MySQL; susiha ang import ug credentials sa api/config.php.
+- Dili moabli ang /login o /schedule: Siguroha nga mod_rewrite ug .htaccess gitugotan sa Apache.
+  Mahimo usab ablihan direkta ang http://localhost/dr-bacal-patient-record/index.html ug
+  http://localhost/dr-bacal-patient-record/schedule.html.
+- Ayaw ablihi ang HTML pinaagi sa file:/// o Live Server kon gamiton ang backend. Kinahanglan
+  agi sa Apache aron modagan ang PHP API ug database.
+
+STRUKTURA SA PROJECT
+- api/config.php                  Database configuration
+- api/index.php                   PHP backend/API ug session handling
+- database/dr_bacal_patient_record.sql  Database ug demo seed records
+- database/migrations/             Pag-update sa daang database
+- css/app.css                      Hitsura sa mga pahina
+- js/                              Frontend logic sa login, schedule, nurse, doctor, history,
+                                   admin, billing, shared data ug date selector
+- index.html                       Staff login page
+- schedule.html                    Public patient scheduling page
+- nurse.html, doctor.html          Nurse ug Doctor dashboards
+- admin.html, billing.html         Admin ug Receptionist/Billing pages
+- history.html                     Medical History page
+- .htaccess                        /login ug /schedule routes
+
+Ang localStorage sa browser dili awtomatikong ibalhin ngadto sa MySQL. Ang database import
+magbutang sa demo records nga naa sa SQL file.
